@@ -5,5 +5,20 @@
     <string name="login">Login</string>
     <string name="register">Register</string>
     <string name="access">Access</string>
+    <string name="user">User</string>
+    <string name="company">Company</string>
+    <string name="confirm">Confirm</string>
+
+    <!-- menu -->
+    <string name="new_product">New product</string>
+    <string name="logout">Logout</string>
+    <string name="configurations">Configurations</string>
+    <string name="search">Search</string>
+
+    <!-- company configurations -->
+    <string name="company_name">Company name</string>
+    <string name="company_category">Category</string>
+    <string name="company_deliverytime">Delivery time</string>
+    <string name="company_deliverytax">Delivery tax</string>
 
 </resources>
