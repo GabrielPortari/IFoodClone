@@ -1,18 +1,18 @@
 package com.example.ifoodclone.helper;
 
 import android.content.Context;
-import android.support.v7.widget.RecyclerView;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Created by Jamilton
  */
 
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
-
     private OnItemClickListener mListener;
     GestureDetector mGestureDetector;
 

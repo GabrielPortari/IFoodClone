@@ -5,17 +5,35 @@ import com.google.firebase.database.DatabaseReference;
 
 public class Product {
     private String userId;
+    private String productId;
     private String name;
     private String description;
     private Double price;
 
     public Product() {
+        DatabaseReference databaseReference = FirebaseConfiguration.getDatabaseReference();
+        DatabaseReference productReference = databaseReference.child("products");
+        setProductId(productReference.push().getKey());
     }
     public void save(){
         DatabaseReference databaseReference = FirebaseConfiguration.getDatabaseReference();
-        DatabaseReference productReference = databaseReference.child("products").child(getUserId()).push();
+        DatabaseReference productReference = databaseReference.child("products").child(getUserId()).child(getProductId());
         productReference.setValue(this);
     }
+    public void delete(){
+        DatabaseReference databaseReference = FirebaseConfiguration.getDatabaseReference();
+        DatabaseReference productReference = databaseReference.child("products").child(getUserId()).child(getProductId());
+        productReference.removeValue();
+    }
+
+    public String getProductId() {
+        return productId;
+    }
+
+    public void setProductId(String productId) {
+        this.productId = productId;
+    }
+
     public String getUserId() {
         return userId;
     }
