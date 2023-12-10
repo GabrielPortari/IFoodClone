@@ -39,7 +39,6 @@ public class AuthenticationActivity extends AppCompatActivity {
 
         auth = FirebaseConfiguration.getFirebaseAuth();
         verifyCurrentUser(); //Verifica se há um usuário logado
-        auth.signOut();
         switchAuth.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

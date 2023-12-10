@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.example.ifoodclone.R;
 import com.example.ifoodclone.helper.FirebaseConfiguration;
 import com.example.ifoodclone.helper.UserFirebase;
@@ -27,6 +28,10 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
@@ -40,13 +45,19 @@ public class CompanyConfigurationsActivity extends AppCompatActivity {
     private CircleImageView imageProfile;
     private Button buttonConfirm;
     private StorageReference storageReference;
+    private DatabaseReference databaseReference;
     private String urlImage = "";
+    private String userId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_company_configurations);
         findViewsById();
         toolbarConfig();
+
+        storageReference = FirebaseConfiguration.getStorageReference();
+        databaseReference = FirebaseConfiguration.getDatabaseReference();
+        recoverCompanyData();
 
         imageProfile.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -73,12 +84,33 @@ public class CompanyConfigurationsActivity extends AppCompatActivity {
         editDeliveryTime = findViewById(R.id.editTextCompanyDeliveryTime);
         editDeliveryTax = findViewById(R.id.editTextCompanyDeliveryTax);
         buttonConfirm = findViewById(R.id.buttonCompanyConfigSave);
-
+        userId = UserFirebase.getUserId();
     }
     private void toolbarConfig(){
         toolbar.setTitle("New Product");
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+    private void recoverCompanyData(){
+        DatabaseReference companyReference = databaseReference.child("companies").child(userId);
+        companyReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if(snapshot.getValue() != null){
+                    Company company = snapshot.getValue(Company.class);
+                    editName.setText(company.getName());
+                    editCategory.setText(company.getCategory());
+                    editDeliveryTime.setText(company.getDeliveryTime());
+                    editDeliveryTax.setText(String.valueOf(company.getTaxPrice()));
+                    Glide.with(CompanyConfigurationsActivity.this).load(company.getUrlImage()).into(imageProfile);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
     }
     private void inputValidation(View v){
         String name = editName.getText().toString();
@@ -92,7 +124,7 @@ public class CompanyConfigurationsActivity extends AppCompatActivity {
                     if(!deliveryTax.isEmpty()){
                         /* Fim da validação dos campos */
                         Company company = new Company();
-                        company.setId(UserFirebase.getUserId());
+                        company.setId(userId);
                         company.setName(name);
                         company.setCategory(category);
                         company.setDeliveryTime(deliveryTime);
@@ -139,11 +171,10 @@ public class CompanyConfigurationsActivity extends AppCompatActivity {
                                 byte[] dadosImagem = byteArrayOutputStream.toByteArray();
 
                                 //salvar imagem no storage do firebase
-                                storageReference = FirebaseConfiguration.getStorageReference();
                                 StorageReference imageRef = storageReference
                                         .child("images")
                                         .child("company")
-                                        .child(UserFirebase.getUserId() + ".jpg");
+                                        .child(userId + ".jpg");
 
                                 UploadTask uploadTask = imageRef.putBytes(dadosImagem);
                                 uploadTask.addOnFailureListener(new OnFailureListener() {
@@ -172,5 +203,6 @@ public class CompanyConfigurationsActivity extends AppCompatActivity {
                     }
                 }
             });
+
 
 }

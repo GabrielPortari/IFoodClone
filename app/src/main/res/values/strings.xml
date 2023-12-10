@@ -21,4 +21,9 @@
     <string name="company_deliverytime">Delivery time</string>
     <string name="company_deliverytax">Delivery tax</string>
 
+    <!-- product values -->
+    <string name="product_name">Product name</string>
+    <string name="product_description">Product description</string>
+    <string name="product_value">$ Product value</string>
+
 </resources>

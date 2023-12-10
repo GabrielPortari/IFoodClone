@@ -94,7 +94,7 @@
         android:background="@drawable/background_edit_text"
         android:ems="10"
         android:hint="@string/company_deliverytax"
-        android:inputType="number"
+        android:inputType="number|numberDecimal"
         android:padding="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
