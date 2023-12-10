@@ -100,6 +100,7 @@ public class CompanyActivity extends AppCompatActivity {
                 for(DataSnapshot ds : snapshot.getChildren()){
                     productList.add(ds.getValue(Product.class));
                 }
+                productAdapter.notifyDataSetChanged();
             }
 
             @Override

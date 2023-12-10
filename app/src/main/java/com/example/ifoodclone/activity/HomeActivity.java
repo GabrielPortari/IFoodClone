@@ -3,6 +3,7 @@ package com.example.ifoodclone.activity;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
@@ -12,22 +13,44 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import com.example.ifoodclone.R;
+import com.example.ifoodclone.adapter.CompanyAdapter;
 import com.example.ifoodclone.helper.FirebaseConfiguration;
+import com.example.ifoodclone.model.Company;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class HomeActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private RecyclerView recyclerCompanies;
+    private CompanyAdapter companyAdapter;
+    private DatabaseReference databaseReference;
     private FirebaseAuth firebaseAuth;
+    private List<Company> companies = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        databaseReference = FirebaseConfiguration.getDatabaseReference();
         firebaseAuth = FirebaseConfiguration.getFirebaseAuth();
 
         findViewsById();
         toolbarConfig();
+
+        //Configuracoes recyclerview
+        recyclerCompanies.setLayoutManager(new LinearLayoutManager(this));
+        recyclerCompanies.setHasFixedSize(true);
+        companyAdapter = new CompanyAdapter(companies, this);
+        recyclerCompanies.setAdapter(companyAdapter);
+        recoverCompanies();
+
     }
 
     private void findViewsById(){
@@ -45,7 +68,6 @@ public class HomeActivity extends AppCompatActivity {
 
         return super.onCreateOptionsMenu(menu);
     }
-
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menuSearch){
@@ -59,7 +81,24 @@ public class HomeActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+    private void recoverCompanies(){
+        DatabaseReference companyReference = databaseReference.child("companies");
+        companyReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                companies.clear();
+                for (DataSnapshot ds : snapshot.getChildren()){
+                    companies.add(ds.getValue(Company.class));
+                }
+                companyAdapter.notifyDataSetChanged();
+            }
 
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
     private void configurations(){
         startActivity(new Intent(HomeActivity.this, CompanyConfigurationsActivity.class));
     }
