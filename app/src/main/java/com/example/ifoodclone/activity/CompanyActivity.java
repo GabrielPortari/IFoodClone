@@ -120,6 +120,8 @@ public class CompanyActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menuAddProduct){
             addProduct();
+        }if(item.getItemId() == R.id.menuOrders){
+            orders();
         }
         if(item.getItemId() == R.id.menuConfigurations){
             configurations();
@@ -129,7 +131,9 @@ public class CompanyActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
+    private void orders(){
+        startActivity(new Intent(CompanyActivity.this, OrderActivity.class));
+    }
     private void configurations(){
         startActivity(new Intent(CompanyActivity.this, CompanyConfigurationsActivity.class));
     }

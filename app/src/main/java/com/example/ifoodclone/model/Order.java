@@ -3,6 +3,7 @@ package com.example.ifoodclone.model;
 import com.example.ifoodclone.helper.FirebaseConfiguration;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class Order {
@@ -39,6 +40,33 @@ public class Order {
                 .child(getIdUser());
 
         orderReference.setValue(this);
+    }
+
+    public void confirm(){
+        DatabaseReference databaseReference = FirebaseConfiguration.getDatabaseReference();
+        DatabaseReference orderReference = databaseReference.child("order")
+                .child(getIdCompany())
+                .child(getIdOrder() );
+
+        orderReference.setValue(this);
+    }
+
+    public void remove(){
+        DatabaseReference databaseReference = FirebaseConfiguration.getDatabaseReference();
+        DatabaseReference orderReference = databaseReference.child("user_order")
+                .child(getIdCompany())
+                .child(getIdUser());
+        orderReference.removeValue();
+    }
+
+    public void updateStatus(){
+        HashMap<String, Object> status = new HashMap<>();
+        status.put("status", getStatus());
+        DatabaseReference databaseReference = FirebaseConfiguration.getDatabaseReference();
+        DatabaseReference orderReference = databaseReference.child("user_order")
+                .child(getIdCompany())
+                .child(getIdOrder());
+        orderReference.updateChildren(status);
     }
     public String getIdUser() {
         return idUser;

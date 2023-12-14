@@ -53,7 +53,7 @@ public class CompanyMenuActivity extends AppCompatActivity {
     private DatabaseReference databaseReference;
     private AlertDialog alertDialog;
     private User user;
-    private int cartItensQuantity;
+    private int cartItensQuantity, paymentMethod;
     private Double cartItensTotalPrice;
 
     @Override
@@ -245,6 +245,44 @@ public class CompanyMenuActivity extends AppCompatActivity {
             }
         });
     }
+    private void confirmOrder(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Select the payment method");
+
+        CharSequence[] items = new CharSequence[]{
+                "Money", "Credit card"
+        };
+        builder.setSingleChoiceItems(items, 0, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                paymentMethod = i;
+            }
+        });
+        EditText editObs = new EditText(this);
+        editObs.setHint("Observation");
+        builder.setView(editObs);
+        builder.setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                String observation = editObs.getText().toString();
+                order.setObs(observation);
+                order.setPayMethod(paymentMethod);
+                order.setStatus("confirmed");
+                order.confirm();
+                order.remove();
+                order = null;
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -255,7 +293,7 @@ public class CompanyMenuActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if(item.getItemId() == R.id.menuConfirm){
-
+            confirmOrder();
         }
         return super.onOptionsItemSelected(item);
     }

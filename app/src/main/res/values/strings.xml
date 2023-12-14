@@ -18,12 +18,16 @@
     <!-- company configurations -->
     <string name="company_name">Company name</string>
     <string name="company_category">Category</string>
+    <string name="company_orders">Orders</string>
     <string name="company_deliverytime">Delivery time</string>
     <string name="company_deliverytax">Delivery tax</string>
 
     <!-- user config -->
     <string name="user_name">User name</string>
     <string name="user_address">User address</string>
+    <string name="payment_method">Payment method</string>
+    <string name="observation">Observation</string>
+    <string name="items">1) Item 1 (1 x R$1.00)</string>
 
     <!-- product values -->
     <string name="product_name">Product name</string>
