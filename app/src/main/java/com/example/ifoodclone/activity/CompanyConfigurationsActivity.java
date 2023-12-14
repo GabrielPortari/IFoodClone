@@ -22,7 +22,7 @@ import android.widget.Toast;
 import com.bumptech.glide.Glide;
 import com.example.ifoodclone.R;
 import com.example.ifoodclone.helper.FirebaseConfiguration;
-import com.example.ifoodclone.helper.UserFirebase;
+import com.example.ifoodclone.helper.FirebaseUserConfiguration;
 import com.example.ifoodclone.model.Company;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
@@ -84,7 +84,7 @@ public class CompanyConfigurationsActivity extends AppCompatActivity {
         editDeliveryTime = findViewById(R.id.editTextCompanyDeliveryTime);
         editDeliveryTax = findViewById(R.id.editTextCompanyDeliveryTax);
         buttonConfirm = findViewById(R.id.buttonCompanyConfigSave);
-        userId = UserFirebase.getUserId();
+        userId = FirebaseUserConfiguration.getUserId();
     }
     private void toolbarConfig(){
         toolbar.setTitle("New Product");

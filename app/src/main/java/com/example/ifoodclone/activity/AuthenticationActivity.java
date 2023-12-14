@@ -15,7 +15,7 @@ import android.widget.Toast;
 
 import com.example.ifoodclone.R;
 import com.example.ifoodclone.helper.FirebaseConfiguration;
-import com.example.ifoodclone.helper.UserFirebase;
+import com.example.ifoodclone.helper.FirebaseUserConfiguration;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -73,7 +73,7 @@ public class AuthenticationActivity extends AppCompatActivity {
                                             if(task.isSuccessful()){
                                                 Toast.makeText(AuthenticationActivity.this, "Registration completed", Toast.LENGTH_SHORT).show();
                                                 String type = getUserType();
-                                                UserFirebase.updateUserType(type);
+                                                FirebaseUserConfiguration.updateUserType(type);
                                                 openMainActivity(type);
                                             }else{
                                                 String exception;

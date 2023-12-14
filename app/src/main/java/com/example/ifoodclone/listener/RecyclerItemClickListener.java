@@ -1,4 +1,4 @@
-package com.example.ifoodclone.helper;
+package com.example.ifoodclone.listener;
 
 import android.content.Context;
 import android.view.GestureDetector;

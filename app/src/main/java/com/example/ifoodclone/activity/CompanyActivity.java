@@ -19,8 +19,8 @@ import android.widget.Toast;
 import com.example.ifoodclone.R;
 import com.example.ifoodclone.adapter.ProductAdapter;
 import com.example.ifoodclone.helper.FirebaseConfiguration;
-import com.example.ifoodclone.helper.RecyclerItemClickListener;
-import com.example.ifoodclone.helper.UserFirebase;
+import com.example.ifoodclone.listener.RecyclerItemClickListener;
+import com.example.ifoodclone.helper.FirebaseUserConfiguration;
 import com.example.ifoodclone.model.Product;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -46,7 +46,7 @@ public class CompanyActivity extends AppCompatActivity {
 
         firebaseAuth = FirebaseConfiguration.getFirebaseAuth();
         databaseReference = FirebaseConfiguration.getDatabaseReference();
-        idUser = UserFirebase.getUserId();
+        idUser = FirebaseUserConfiguration.getUserId();
 
         findViewsById();
         toolbarConfig();

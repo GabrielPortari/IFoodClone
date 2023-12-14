@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 
 import com.example.ifoodclone.R;
 import com.example.ifoodclone.adapter.CompanyAdapter;
 import com.example.ifoodclone.helper.FirebaseConfiguration;
+import com.example.ifoodclone.listener.RecyclerItemClickListener;
 import com.example.ifoodclone.model.Company;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -51,6 +54,29 @@ public class HomeActivity extends AppCompatActivity {
         recyclerCompanies.setAdapter(companyAdapter);
         recoverCompanies();
 
+        recyclerCompanies.addOnItemTouchListener(new RecyclerItemClickListener(
+                this,
+                recyclerCompanies,
+                new RecyclerItemClickListener.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(View view, int position) {
+                        Company selectedCompany = companies.get(position);
+                        Intent i = new Intent(HomeActivity.this, CompanyMenuActivity.class);
+                        i.putExtra("company", selectedCompany);
+                        startActivity(i);
+                    }
+
+                    @Override
+                    public void onLongItemClick(View view, int position) {
+
+                    }
+
+                    @Override
+                    public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+
+                    }
+                }
+        ));
     }
 
     private void findViewsById(){
@@ -100,7 +126,7 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
     private void configurations(){
-        startActivity(new Intent(HomeActivity.this, CompanyConfigurationsActivity.class));
+        startActivity(new Intent(HomeActivity.this, UserConfigurationsActivity.class));
     }
     private void search(){
         startActivity(new Intent(HomeActivity.this, SearchActivity.class));

@@ -21,9 +21,18 @@
     <string name="company_deliverytime">Delivery time</string>
     <string name="company_deliverytax">Delivery tax</string>
 
+    <!-- user config -->
+    <string name="user_name">User name</string>
+    <string name="user_address">User address</string>
+
     <!-- product values -->
     <string name="product_name">Product name</string>
     <string name="product_description">Product description</string>
     <string name="product_value">$ Product value</string>
+
+    <!-- cart -->
+    <string name="see_cart">See cart</string>
+    <string name="quantity">Qt.</string>
+    <string name="value">R$ 0.00</string>
 
 </resources>

@@ -4,7 +4,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
 
-public class UserFirebase {
+public class FirebaseUserConfiguration {
 
     public static String getUserId(){
         FirebaseAuth auth = FirebaseConfiguration.getFirebaseAuth();

@@ -10,8 +10,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.ifoodclone.R;
-import com.example.ifoodclone.helper.UserFirebase;
-import com.example.ifoodclone.model.Company;
+import com.example.ifoodclone.helper.FirebaseUserConfiguration;
 import com.example.ifoodclone.model.Product;
 
 public class NewProductActivity extends AppCompatActivity {
@@ -25,7 +24,7 @@ public class NewProductActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_product);
         findViewsById();
         toolbarConfig();
-        userId = UserFirebase.getUserId();
+        userId = FirebaseUserConfiguration.getUserId();
 
         buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
