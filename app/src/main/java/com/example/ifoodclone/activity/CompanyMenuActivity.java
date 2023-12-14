@@ -25,6 +25,7 @@ import com.example.ifoodclone.helper.FirebaseConfiguration;
 import com.example.ifoodclone.listener.RecyclerItemClickListener;
 import com.example.ifoodclone.helper.FirebaseUserConfiguration;
 import com.example.ifoodclone.model.Company;
+import com.example.ifoodclone.model.Order;
 import com.example.ifoodclone.model.OrderItem;
 import com.example.ifoodclone.model.Product;
 import com.example.ifoodclone.model.User;
@@ -33,6 +34,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,16 +42,19 @@ import de.hdodenhof.circleimageview.CircleImageView;
 
 public class CompanyMenuActivity extends AppCompatActivity {
     private Toolbar toolbar;
-    private TextView textCompanyName;
+    private TextView textCompanyName, textCartQuantity, textCartTotalPrice;
     private CircleImageView profileImage;
     private RecyclerView recyclerMenu;
     private ProductAdapter productAdapter;
     private List<Product> productList;
     private List<OrderItem> cartItems;
+    private Order order;
     private Company selectedCompany;
-    private DatabaseReference databaseReference = FirebaseConfiguration.getDatabaseReference();
+    private DatabaseReference databaseReference;
     private AlertDialog alertDialog;
     private User user;
+    private int cartItensQuantity;
+    private Double cartItensTotalPrice;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +62,7 @@ public class CompanyMenuActivity extends AppCompatActivity {
         setContentView(R.layout.activity_company_menu);
         findViewsById();
         toolbarConfig();
+        databaseReference = FirebaseConfiguration.getDatabaseReference();
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null){
@@ -66,6 +72,7 @@ public class CompanyMenuActivity extends AppCompatActivity {
             textCompanyName.setText(selectedCompany.getName());
             Glide.with(CompanyMenuActivity.this).load(selectedCompany.getUrlImage()).into(profileImage);
             recoverProducts();
+            recoverUserData();
         }
 
         recyclerMenu.setLayoutManager(new LinearLayoutManager(this));
@@ -116,8 +123,18 @@ public class CompanyMenuActivity extends AppCompatActivity {
                 orderItem.setQuantity(Integer.parseInt(quantity));
                 orderItem.setProductName(product.getName());
                 orderItem.setPrice(product.getPrice());
-
                 cartItems.add(orderItem);
+
+                if(order == null) {
+                    String userId = user.getId();
+                    String companyId = selectedCompany.getId();
+                    order = new Order(userId, companyId);
+                }
+
+                order.setName(user.getName());
+                order.setAddress(user.getAddress());
+                order.setItems(cartItems);
+                order.save();
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -132,6 +149,8 @@ public class CompanyMenuActivity extends AppCompatActivity {
     private void findViewsById() {
         toolbar = findViewById(R.id.toolbar);
         textCompanyName = findViewById(R.id.textCompanyNameMenu);
+        textCartQuantity = findViewById(R.id.textViewCartQuantity);
+        textCartTotalPrice = findViewById(R.id.textViewCartPrice);
         profileImage = findViewById(R.id.imageProfileMenu);
         recyclerMenu = findViewById(R.id.recyclerMenu);
         productList = new ArrayList<>();
@@ -149,8 +168,8 @@ public class CompanyMenuActivity extends AppCompatActivity {
         alert.setView(R.layout.loading);
         alertDialog = alert.create();
         alertDialog.show();
-
     }
+
     private void recoverUserData(){
         loadingDialog("Loading...");
         DatabaseReference userReference = databaseReference.child("user").child(FirebaseUserConfiguration.getUserId());
@@ -170,6 +189,42 @@ public class CompanyMenuActivity extends AppCompatActivity {
         });
     }
     private void recoverOrder(){
+        String userId = user.getId();
+        String companyId = selectedCompany.getId();
+
+        DatabaseReference orderReference = databaseReference.child("user_order")
+                        .child(companyId)
+                                .child(userId);
+        orderReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                cartItensQuantity = 0;
+                cartItensTotalPrice = 0.0;
+                cartItems = new ArrayList<>();
+                if(snapshot.getValue() != null){
+                    order = snapshot.getValue(Order.class);
+                    cartItems = order.getItems();
+
+                    for(OrderItem orderItem : cartItems){
+                        int quantity = orderItem.getQuantity();
+                        Double price = orderItem.getPrice();
+                        cartItensQuantity += quantity;
+                        cartItensTotalPrice += quantity * price;
+                    }
+                }
+                DecimalFormat decimalFormat = new DecimalFormat("0.00");
+                textCartQuantity.setText("Qt: " + cartItensQuantity);
+                textCartTotalPrice.setText("R$: " + decimalFormat.format(cartItensTotalPrice));
+
+                alertDialog.dismiss();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
         alertDialog.dismiss();
     }
     private void recoverProducts(){
